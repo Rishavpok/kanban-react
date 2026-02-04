@@ -1,0 +1,62 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+    padding:0;
+    box-sizing: border-box;
+    /*display: flex;*/
+    /*justify-content: center; !* horizontal center *!*/
+    /*align-items: center;     !* vertical center *!*/
+    height: 100vh;           /* full viewport height */
+}
+
+.display-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.field-group {
+    margin-bottom: 16px;
+}
+
+.field-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #444;
+}
+
+.field-group input , select{
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    background: #fafafa;
+}
+
+.field-group input:focus {
+    border-color: #007bff;
+}
+
+.error {
+    text-align: center;
+    color: red;
+    font-size: 12px;
+}
+
+.login-wrapper {
+    position: fixed; /* cover the entire viewport */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: grid; /* safe way to center without flex */
+    place-items: center; /* centers content horizontally and vertically */
+    background: #f4f5f7; /* optional: light background */
+    z-index: 999; /* optional: make sure it's above other content */
+}
