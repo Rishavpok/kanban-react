@@ -3,7 +3,6 @@ import Form from "../../../components/Form/Form";
 import Input from "../../../components/Input/Input";
 import Button from "../../../components/Button/Button";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { login } from "../services/auth.service";
 
 type LoginForm = {
@@ -45,17 +44,24 @@ export default function Login() {
                 <div className="register-card" >
                     <h2>Login</h2>
 
-                    <Form onSubmit={handleSubmit(handleLogin, handleInvalid)} >
+                    <Form onSubmit={handleSubmit(handleLogin)} >
                         <div className="field-group">
                             <label >Email</label>
                             <Input
                                 formName={register}
                                 control="email"
                                 type="email"
-                                required
-                                placeholder="Enter your email" ></Input>
+                                placeholder="Enter your email"
+                                rules={{
+                                    required: "Email is required",
+                                    pattern: {
+                                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                        message: "Enter a valid email address"
+                                    }
+                                }}
+                            />
 
-                            {errors.email && <p>Email is required</p>}
+                            {errors.email && <p className="error-text">{errors.email.message}</p>}
                         </div>
 
                         <div className="field-group">
@@ -64,10 +70,17 @@ export default function Login() {
                                 formName={register}
                                 control="password"
                                 type="password"
-                                required
-                                placeholder="Enter your password" ></Input>
+                                placeholder="Enter your password"
+                                rules={{
+                                    required: "Password is required",
+                                    minLength: {
+                                        value: 8,
+                                        message: "Password must be at least 8 characters"
+                                    }
+                                }}
+                            />
 
-                            {errors.password && <p>Password is required</p>}
+                            {errors.password && <p className="error-text">{errors.password.message}</p>}
                         </div>
 
                         <Button label="Login" ></Button>

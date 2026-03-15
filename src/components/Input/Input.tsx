@@ -1,7 +1,19 @@
-export default function Input({type , placeholder, formName , control, required}) {
-    return (
-        <>
-        <input {...formName(control , { required : required ? "This field is required" : false } )  } type={type} placeholder={placeholder}  />
-        </>
-    )
+import type { UseFormRegister, RegisterOptions, FieldValues, Path } from 'react-hook-form'
+
+type InputProps<T extends FieldValues> = {
+    type: string
+    placeholder: string
+    formName: UseFormRegister<T>
+    control: Path<T>
+    rules?: RegisterOptions
+}
+
+export default function Input<T extends FieldValues>({
+    type,
+    placeholder,
+    formName,
+    control,
+    rules
+}: InputProps<T>) {
+    return <input {...formName(control, rules)} type={type} placeholder={placeholder} />
 }
