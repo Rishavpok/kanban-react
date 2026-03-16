@@ -1,6 +1,6 @@
 import "./Boardcolumn.css"
 import TaskCard from "./TaskCard"
-export default function BoardColumn({ onClick, title, tasks }) {
+export default function BoardColumn({ onClick, title, tasks , updateTasks}) {
     return (
         <>
             <div className="board-column">
@@ -13,7 +13,7 @@ export default function BoardColumn({ onClick, title, tasks }) {
                 <div className="task-list">
                     {tasks.length === 0
                         ? <p className="empty-text">No tasks yet</p>
-                        : tasks.map(task => <TaskCard key={task.id} task={task} />)
+                        : tasks.map(task => <TaskCard key={task.id} task={task} onUpdate={updateTasks}  />)
                     }
                 </div>
 
