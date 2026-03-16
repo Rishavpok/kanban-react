@@ -14,7 +14,7 @@ type tasksForm = {
     priority: string
 }
 
-export default function AddTaskModal({ onClose, onAdd, task, update }) {
+export default function AddTaskModal({ onClose, onAdd, task, update , onDelete }) {
 
     const statusOptions: SelectOption[] = [
         { label: "To Do", value: "todo" },
@@ -29,13 +29,14 @@ export default function AddTaskModal({ onClose, onAdd, task, update }) {
     ]
 
     function handleTasksSubmit(data: tasksForm) {
+           console.log(data);
           task ? update(data) : onAdd(data)
     }
 
 
-    const { register, handleSubmit, formState: { errors }, reset } = useForm<tasksForm>({
+    const { register, handleSubmit, formState: { errors } } = useForm<tasksForm>({
         defaultValues: {
-            id : task.id ?? '',
+            id : task?.id ?? '',
             title: task?.title ?? '',
             description: task?.description ?? '',
             status: task?.status ?? '',
@@ -118,7 +119,7 @@ export default function AddTaskModal({ onClose, onAdd, task, update }) {
 
                             <div className="modal-footer">
                                 <button className="btn cancel" onClick={onClose}  > Cancel </button>
-                                {task ? <button className="btn delete">Delete</button> : null}
+                                {task ? <button type="button" onClick={() => onDelete(task.id) } className="btn delete">Delete</button> : null}
                                 {!task ? <button
                                     type="submit"
                                     className="btn primary"> Add Task </button> : null}

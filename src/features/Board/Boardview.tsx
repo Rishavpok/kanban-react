@@ -1,8 +1,11 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import BoardColumn from "./Boardcolumn"
 import "./Boardview.css"
 import AddTaskModal from "./AddTasks"
 import type { Category, Task } from "../../types/types"
+import { addTasks, deleteTask, getTasks, taskUpdate } from "./board.service"
+import { toast } from 'react-toastify'
+
 export default function BoardView() {
 
     const [showAddTaskModal, setshowAddTaskModal] = useState(false)
@@ -43,39 +46,76 @@ export default function BoardView() {
         setSelectedTask(null)
     }
 
-    function saveTasks(data: Task) {
-        const newTask = {
-            ...data,
-            id: Date.now()
+    async function saveTasks(data: Task) {
+        try {
+            const res = await addTasks(data)
+            if (res) {
+                toast.success("Task added successfully!")
+                fetchTasks()
+            }
+
+        } catch (e) {
+            toast.error("Failed to add task!")
         }
-
-        setCategories(prev =>
-            prev.map(category =>
-                category.status === data.status
-                    ? { ...category, tasks: [...category.tasks, newTask] }  // new array, new object
-                    : category  // unchanged categories returned as is
-            )
-        )
-
         setshowAddTaskModal(false)
     }
 
     function updateTasks(task: Task) {
+        console.log(task, 'from select');
         setSelectedTask(task)
         setshowAddTaskModal(true)
     }
 
-function update(updatedTask: Task) {
-    setCategories(prev =>
-        prev.map(category => ({
-            ...category,
-            tasks: category.tasks.map(t =>
-                t.id === updatedTask.id ? { ...updatedTask } : t
-            )
-        }))
-    )
-    closeModel()
-}
+    async function update(updatedTask: Task) {
+        try {
+            const res = await taskUpdate(updatedTask.id, updatedTask)
+
+            if (res) {
+                toast.success("Task updated successfully!")
+                fetchTasks()
+            }
+
+        } catch (e) {
+            toast.error("Failed to update task !!!!")
+        }
+        closeModel()
+    }
+
+    async function fetchTasks() {
+        try {
+            const [todoRes, inProgressRes, completedRes] = await Promise.all([
+                getTasks('todo'),
+                getTasks('progress'),
+                getTasks('completed'),
+            ])
+            setCategories([
+                { id: 1, name: "Todo", status: "todo", tasks: todoRes.data.data },
+                { id: 2, name: "In Progress", status: "progress", tasks: inProgressRes.data.data },
+                { id: 3, name: "Completed", status: "completed", tasks: completedRes.data.data },
+            ])
+
+        } catch (error) {
+            alert("Something went wrong from fetch!!!")
+        }
+    }
+
+    async function deleteTasks(id: number) {
+        try {
+            const res = await deleteTask(id)
+            if (res) {
+                toast.success("Task deleted successfully")
+                fetchTasks()
+            }
+        } catch (err) {
+            toast.error("Failed to delete task!")
+        }
+
+        closeModel()
+    }
+
+    useEffect(() => {
+        fetchTasks()
+    }, [])
 
     return (
         <>
@@ -99,7 +139,7 @@ function update(updatedTask: Task) {
 
                 </div>
 
-                {showAddTaskModal && <AddTaskModal onClose={closeModel} onAdd={saveTasks} task={selectedTask} update={update} />}
+                {showAddTaskModal && <AddTaskModal onClose={closeModel} onAdd={saveTasks} task={selectedTask} update={update} onDelete={deleteTasks} />}
 
                 <button className="logout-btn" >
                     Logout

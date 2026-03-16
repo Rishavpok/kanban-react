@@ -4,12 +4,13 @@ import Form from '../../../components/Form/Form';
 import Input from '../../../components/Input/Input';
 import { useForm } from "react-hook-form";
 import Button from '../../../components/Button/Button';
+import { signUp } from '../services/auth.service';
 
 type RegisterForm = {
     email: string
     name: string
     password: string
-    confirm_password: string
+    confirmPassword: string
 }
 
 export default function Registration() {
@@ -21,8 +22,12 @@ export default function Registration() {
 
     async function handleRegister(data: RegisterForm) {
         try {
-            console.log(data)
-            navigate('/home')
+            const res = await signUp(data)
+            alert('Registration completed successfully')
+            if (res) {
+                navigate('/login')
+            }
+
         } catch (error) {
             alert("Something went wrong !!!")
         }
@@ -93,7 +98,7 @@ export default function Registration() {
                         <label>Confirm Password</label>
                         <Input
                             formName={register}
-                            control="confirm_password"
+                            control="confirmPassword"
                             type="password"
                             placeholder="Enter your password again"
                             rules={{
@@ -101,7 +106,7 @@ export default function Registration() {
                                 validate: value => value === password || "Passwords do not match"
                             }}
                         />
-                        {errors.confirm_password && <p className="error-text">{errors.confirm_password.message}</p>}
+                        {errors.confirmPassword && <p className="error-text">{errors.confirmPassword.message}</p>}
                     </div>
 
                     <Button label="Register" />
